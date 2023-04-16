@@ -1,7 +1,7 @@
 package database
 
 import (
-	"crud_api/config"
+	"fiber-crud-api/config"
 	"fmt"
 	"log"
 	"strconv"

@@ -13,8 +13,17 @@ docker-compose up -d
 ```bash
 go mod download
 ```
+4. Run the project using:
+```bash
+go run cmd/main.go
+
+# or
+
+air
+```
 
 ## Technologies
 
 * [Fiber](https://gofiber.io/)
 * [Gorm](https://gorm.io/)
+* [Swagger](https://github.com/gofiber/swagger)

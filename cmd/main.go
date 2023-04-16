@@ -1,8 +1,9 @@
 package main
 
 import (
-	"crud_api/config"
-	"crud_api/database"
+	"fiber-crud-api/config"
+	"fiber-crud-api/database"
+	"fiber-crud-api/router"
 	"fmt"
 	"log"
 
@@ -20,9 +21,9 @@ func main() {
 
 	middlewares(app)
 
-	serverPort := fmt.Sprintf(":%s", config.GetEnv("PORT"))
+	router.Setup(app)
 
-	log.Fatal(app.Listen(serverPort))
+	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.GetEnv("PORT"))))
 }
 
 func middlewares(app *fiber.App) {
