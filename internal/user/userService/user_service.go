@@ -5,7 +5,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/database"
 	"github.com/waxer59/basic-go-fiber-api/internal/user/userModels"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUser(c *fiber.Ctx) error {
@@ -28,30 +27,19 @@ func CreateUser(c *fiber.Ctx) error {
 	err := c.BodyParser(user)
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user", "data": nil})
 	}
 
-	user.ID = uuid.New()
-
-	err = user.Validate()
-
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "Invalid user"})
-	}
-
-	userPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user"})
-	}
-
-	user.Password = string(userPassword)
+	user.SetUUID()
+	user.ValidateFields(c)
+	user.HashPassword(c)
 
 	err = db.Create(&user).Error
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user", "data": nil})
 	}
+
 	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "User created", "data": user})
 }
 
@@ -73,14 +61,16 @@ func UpdateUser(c *fiber.Ctx) error {
 	err := c.BodyParser(&updateUser)
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user", "data": nil})
 	}
+
+	updateUser.ValidateFields(c)
 
 	user.Name = updateUser.Name
 	user.Email = updateUser.Email
-	user.Password = updateUser.Password
+	updateUser.HashPassword(c)
 
-	db.Save(&user)
+	db.Model(&user).Updates(&updateUser)
 
 	return c.JSON(fiber.Map{"status": "success", "message": "User updated", "data": user})
 }
@@ -100,7 +90,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	err := db.Delete(&user, "id = ?", id).Error
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't delete user"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't delete user", "data": nil})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "User deleted", "data": nil})
