@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/waxer59/basic-go-fiber-api/config"
+	"github.com/waxer59/basic-go-fiber-api/internal/user/userModels"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -32,4 +33,7 @@ func Connect() {
 	}
 
 	fmt.Println("Database connection established")
+
+	DB.AutoMigrate(&userModels.User{})
+	fmt.Println("Database Migrated")
 }
