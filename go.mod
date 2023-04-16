@@ -1,4 +1,4 @@
-module fiber-crud-api
+module github.com/waxer59/basic-go-fiber-api
 
 go 1.20
 

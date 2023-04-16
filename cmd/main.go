@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fiber-crud-api/config"
-	"fiber-crud-api/database"
-	"fiber-crud-api/router"
 	"fmt"
 	"log"
+
+	"github.com/waxer59/basic-go-fiber-api/config"
+	"github.com/waxer59/basic-go-fiber-api/database"
+	"github.com/waxer59/basic-go-fiber-api/router"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

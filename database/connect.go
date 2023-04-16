@@ -1,10 +1,11 @@
 package database
 
 import (
-	"fiber-crud-api/config"
 	"fmt"
 	"log"
 	"strconv"
+
+	"github.com/waxer59/basic-go-fiber-api/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
