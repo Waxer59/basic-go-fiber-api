@@ -22,6 +22,15 @@ go run cmd/main.go
 air
 ```
 
+## Instructions
+
+All the routes are documented in the path `/swagger`.
+
+> Every time you make changes in the api and you want to rebuild the documentation you must use this command, in the root of the project:
+> ```bash
+>   swag init --pd
+> ```
+
 ## Technologies
 
 * [Fiber](https://gofiber.io/)
