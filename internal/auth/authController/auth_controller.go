@@ -32,10 +32,6 @@ func registerUser(c *fiber.Ctx) error {
 
 	user.SetUUID()
 
-	if err := user.ValidateFields(); err != nil {
-		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "Invalid fields", "data": nil})
-	}
-
 	if err := user.HashPassword(); err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": nil})
 	}

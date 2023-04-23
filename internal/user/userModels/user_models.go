@@ -1,7 +1,7 @@
 package userModels
 
 import (
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/internal/utils/bcryptUtils"
 	"gorm.io/gorm"
@@ -18,9 +18,9 @@ type User struct {
 }
 
 type UpdateUser struct {
-	Name     string `json:"name"`
-	Email    string `json:"email" validate:"email"`
-	Password string `json:"password"`
+	Name     string  `json:"name"`
+	Email    *string `json:"email,omitempty" validate:"omitempty,email"`
+	Password string  `json:"password"`
 }
 
 func (u User) ValidateFields() error {

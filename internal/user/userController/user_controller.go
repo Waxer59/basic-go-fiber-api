@@ -39,7 +39,7 @@ func userPatch(c *fiber.Ctx) error {
 	user, err := userService.UpdateUser(id, updateUser)
 
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": err.Error(), "data": nil})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "User updated", "data": user})
@@ -58,7 +58,7 @@ func userDelete(c *fiber.Ctx) error {
 	user, err := userService.DeleteUser(id)
 
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": err.Error(), "data": nil})
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "User deleted", "data": user})
@@ -77,7 +77,7 @@ func userGet(c *fiber.Ctx) error {
 	user, err := userService.GetUserById(id)
 
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": err.Error(), "data": nil})
 	}
 
 	return c.Status(200).JSON(fiber.Map{"message": "User found", "status": "success", "data": user})

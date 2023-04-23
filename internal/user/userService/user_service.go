@@ -39,10 +39,14 @@ func GetUserByEmail(email string) (*userModels.User, error) {
 func CreateUser(user userModels.User) (*userModels.User, error) {
 	db := database.DB
 
+	if err := user.ValidateFields(); err != nil {
+		return nil, errors.New("Invalid fields")
+	}
+
 	err := db.Create(&user).Error
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Error creating user")
 	}
 
 	return &user, nil
@@ -54,18 +58,21 @@ func UpdateUser(id string, updateUser userModels.UpdateUser) (*userModels.User, 
 	user, err := GetUserById(id)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("No user found")
 	}
 
 	if err := updateUser.ValidateFields(); err != nil {
-		return nil, err
+		return nil, errors.New("Invalid fields")
 	}
 
 	user.Name = updateUser.Name
-	user.Email = updateUser.Email
+
+	if updateUser.Email != nil {
+		user.Email = *updateUser.Email
+	}
 
 	if err := updateUser.HashPassword(); err != nil {
-		return nil, err
+		return nil, errors.New("Invalid password")
 	}
 
 	db.Model(user).Updates(&updateUser)
@@ -85,7 +92,7 @@ func DeleteUser(id string) (*userModels.User, error) {
 	err = db.Delete(&user, "id = ?", id).Error
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Error deleting user")
 	}
 
 	return user, nil
