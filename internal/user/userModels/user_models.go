@@ -3,7 +3,7 @@ package userModels
 import (
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/waxer59/basic-go-fiber-api/internal/utils/bcryptUtils"
 	"gorm.io/gorm"
 )
 
@@ -38,7 +38,7 @@ func (u *User) SetUUID() {
 }
 
 func (u *User) HashPassword() error {
-	userPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	userPassword, err := bcryptUtils.Encript(u.Password)
 
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (u UpdateUser) ValidateFields() error {
 
 func (u *UpdateUser) HashPassword() error {
 	if u.Password != "" {
-		userPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+		userPassword, err := bcryptUtils.Encript(u.Password)
 		if err != nil {
 			return err
 		}

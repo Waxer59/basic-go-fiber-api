@@ -9,8 +9,6 @@ import (
 func Setup(router fiber.Router) {
 	user := router.Group("/user")
 
-	user.Post("/", userPost)
-
 	user.Get("/", userGetAll)
 
 	user.Get("/:id", userGet)
@@ -76,7 +74,7 @@ func userDelete(c *fiber.Ctx) error {
 func userGet(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	user, err := userService.GetUser(id)
+	user, err := userService.GetUserById(id)
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "User not found", "data": nil})
@@ -100,37 +98,4 @@ func userGetAll(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Users found", "data": users})
-}
-
-// Create a new user
-// @Description Create a new user
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /users [post]
-func userPost(c *fiber.Ctx) error {
-	user := new(userModels.User)
-
-	if err := c.BodyParser(user); err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user", "data": nil})
-	}
-
-	user.SetUUID()
-
-	if err := user.ValidateFields(); err != nil {
-		return c.Status(400).JSON(fiber.Map{"status": "error", "message": "Invalid fields", "data": nil})
-	}
-
-	if err := user.HashPassword(); err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": nil})
-	}
-
-	_, err := userService.CreateUser(*user)
-
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user", "data": nil})
-	}
-
-	return c.Status(200).JSON(fiber.Map{"status": "success", "message": "User created", "data": *user})
 }

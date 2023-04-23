@@ -8,12 +8,26 @@ import (
 	"github.com/waxer59/basic-go-fiber-api/internal/user/userModels"
 )
 
-func GetUser(id string) (*userModels.User, error) {
+func GetUserById(id string) (*userModels.User, error) {
 	db := database.DB
 
 	var user userModels.User
 
 	db.Find(&user, "id = ?", id)
+
+	if user.ID == uuid.Nil {
+		return nil, errors.New("No user found")
+	}
+
+	return &user, nil
+}
+
+func GetUserByEmail(email string) (*userModels.User, error) {
+	db := database.DB
+
+	var user userModels.User
+
+	db.Find(&user, "email = ?", email)
 
 	if user.ID == uuid.Nil {
 		return nil, errors.New("No user found")
@@ -37,7 +51,7 @@ func CreateUser(user userModels.User) (*userModels.User, error) {
 func UpdateUser(id string, updateUser userModels.UpdateUser) (*userModels.User, error) {
 	db := database.DB
 
-	user, err := GetUser(id)
+	user, err := GetUserById(id)
 
 	if err != nil {
 		return nil, err
@@ -62,7 +76,7 @@ func UpdateUser(id string, updateUser userModels.UpdateUser) (*userModels.User, 
 func DeleteUser(id string) (*userModels.User, error) {
 	db := database.DB
 
-	user, err := GetUser(id)
+	user, err := GetUserById(id)
 
 	if err != nil {
 		return nil, err

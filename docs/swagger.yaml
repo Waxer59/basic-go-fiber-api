@@ -35,11 +35,11 @@ info:
   title: Basic Go Fiber API
   version: "1.0"
 paths:
-  /users:
-    get:
+  /auth/login:
+    post:
       consumes:
       - application/json
-      description: Get all users
+      description: Login a user
       produces:
       - application/json
       responses:
@@ -48,11 +48,26 @@ paths:
           schema:
             $ref: '#/definitions/userModels.User'
       tags:
-      - Users
+      - Auth
+  /auth/register:
     post:
       consumes:
       - application/json
       description: Create a new user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userModels.User'
+      tags:
+      - Auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
       produces:
       - application/json
       responses:
