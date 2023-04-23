@@ -4,13 +4,11 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/internal/utils/bcryptUtils"
-	"gorm.io/gorm"
 )
 
 var validate = validator.New()
 
 type User struct {
-	gorm.Model
 	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name     string    `json:"name" gorm:"not null" validate:"required"`
 	Email    string    `json:"email" gorm:"unique;not null" validate:"required,email"`
