@@ -11,9 +11,11 @@ import (
 
 var jwtKey = []byte(config.GetEnv("JWT_SECRET_KEY"))
 
+const JWT_EXPIRATION_TIME = time.Hour * 24
+
 func NewJwt(data map[string]interface{}) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp": time.Now().Add(10 * time.Minute),
+		"exp": time.Now().Add(JWT_EXPIRATION_TIME).Unix(),
 	})
 
 	claims, ok := token.Claims.(jwt.MapClaims)
@@ -38,6 +40,9 @@ func NewJwt(data map[string]interface{}) (string, error) {
 
 func ParseJwt(tokenString string) (*jwt.MapClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid token")
+		}
 		return jwtKey, nil
 	})
 

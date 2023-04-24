@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
 	"github.com/waxer59/basic-go-fiber-api/internal/auth/authController"
+	"github.com/waxer59/basic-go-fiber-api/internal/upload/uploadController"
 	"github.com/waxer59/basic-go-fiber-api/internal/user/userController"
 )
 
@@ -18,4 +19,5 @@ func Setup(app *fiber.App) {
 
 	userController.Setup(api)
 	authController.Setup(api)
+	uploadController.Setup(api)
 }
