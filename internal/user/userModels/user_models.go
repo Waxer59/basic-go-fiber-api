@@ -4,6 +4,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/internal/utils/bcryptUtils"
+	"gorm.io/gorm"
 )
 
 var validate = validator.New()
@@ -21,6 +22,12 @@ type UpdateUser struct {
 	Password string  `json:"password"`
 }
 
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	u.ID = uuid.New()
+
+	return nil
+}
+
 func (u User) ValidateFields() error {
 	err := validate.Struct(u)
 
@@ -29,10 +36,6 @@ func (u User) ValidateFields() error {
 	}
 
 	return nil
-}
-
-func (u *User) SetUUID() {
-	u.ID = uuid.New()
 }
 
 func (u *User) HashPassword() error {

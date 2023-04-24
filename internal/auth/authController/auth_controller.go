@@ -30,13 +30,11 @@ func registerUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user", "data": nil})
 	}
 
-	user.SetUUID()
-
 	if err := user.HashPassword(); err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": nil})
 	}
 
-	_, err := userService.CreateUser(*user)
+	_, err := userService.CreateUser(user)
 
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user", "data": nil})

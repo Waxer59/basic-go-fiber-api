@@ -36,7 +36,7 @@ func GetUserByEmail(email string) (*userModels.User, error) {
 	return &user, nil
 }
 
-func CreateUser(user userModels.User) (*userModels.User, error) {
+func CreateUser(user *userModels.User) (*userModels.User, error) {
 	db := database.DB
 
 	if err := user.ValidateFields(); err != nil {
@@ -49,7 +49,7 @@ func CreateUser(user userModels.User) (*userModels.User, error) {
 		return nil, errors.New("Error creating user")
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 func UpdateUser(id string, updateUser userModels.UpdateUser) (*userModels.User, error) {
