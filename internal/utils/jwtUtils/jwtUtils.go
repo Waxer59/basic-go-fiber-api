@@ -2,33 +2,29 @@ package jwtUtils
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/config"
 )
+
+type JWTClaims struct {
+	exp int64
+	ID  uuid.UUID
+	jwt.StandardClaims
+}
 
 var jwtKey = []byte(config.GetEnv("JWT_SECRET_KEY"))
 
 const JWT_EXPIRATION_TIME = time.Hour * 24
 
-func NewJwt(data map[string]interface{}) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp": time.Now().Add(JWT_EXPIRATION_TIME).Unix(),
+func NewJwt(id uuid.UUID) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaims{
+		exp: time.Now().Add(JWT_EXPIRATION_TIME).Unix(),
+		ID:  id,
 	})
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok {
-		return "", errors.New("could not parse claims")
-	}
-
-	for key, value := range data {
-		claims[key] = value
-	}
-
-	fmt.Println(token.Claims)
 	tokenString, err := token.SignedString(jwtKey)
 
 	if err != nil {
@@ -38,8 +34,8 @@ func NewJwt(data map[string]interface{}) (string, error) {
 	return tokenString, nil
 }
 
-func ParseJwt(tokenString string) (*jwt.MapClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+func ParseJwt(tokenString string) (*JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid token")
 		}
@@ -50,11 +46,9 @@ func ParseJwt(tokenString string) (*jwt.MapClaims, error) {
 		return nil, err
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok || !token.Valid {
-		return nil, errors.New("invalid token")
+	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
+		return claims, nil
 	}
 
-	return &claims, nil
+	return nil, errors.New("invalid token")
 }

@@ -30,6 +30,10 @@ func registerUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't parse user", "data": nil})
 	}
 
+	if userEmail, err := userService.GetUserByEmail(user.Email); err == nil || userEmail != nil {
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "User already exists", "data": nil})
+	}
+
 	if err := user.HashPassword(); err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": nil})
 	}

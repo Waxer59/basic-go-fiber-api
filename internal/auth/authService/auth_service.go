@@ -19,11 +19,7 @@ func UserLogin(email string, password string) (string, error) {
 		return "", err
 	}
 
-	jwtData := map[string]interface{}{
-		"id": user.ID,
-	}
-
-	token, err := jwtUtils.NewJwt(jwtData)
+	token, err := jwtUtils.NewJwt(user.ID)
 
 	if err != nil {
 		return "", err

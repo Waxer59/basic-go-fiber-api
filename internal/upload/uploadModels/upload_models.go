@@ -6,8 +6,8 @@ import (
 )
 
 type Upload struct {
-	ID        uuid.UUID       `gorm:"type:uuid;primary_key;"`
-	File_name uuid.UUID       `json:"file_name" gorm:"not null"`
-	UserID    uuid.UUID       `json:"userId" `
-	User      userModels.User `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	ID     uuid.UUID       `gorm:"type:uuid;primaryKey" json:"id"`
+	Ext    string          `json:"-" gorm:"not null"`
+	UserID uuid.UUID       `json:"-"`
+	User   userModels.User `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE" json:"-"`
 }

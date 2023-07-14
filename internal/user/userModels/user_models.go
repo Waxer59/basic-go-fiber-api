@@ -13,13 +13,13 @@ type User struct {
 	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name     string    `json:"name" gorm:"not null" validate:"required"`
 	Email    string    `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password string    `json:"password" gorm:"not null" validate:"required"`
+	Password string    `json:"-" gorm:"not null" validate:"required"` // omited on response
 }
 
 type UpdateUser struct {
 	Name     string  `json:"name"`
 	Email    *string `json:"email,omitempty" validate:"omitempty,email"`
-	Password string  `json:"password"`
+	Password string  `json:"-"` // omited on response
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
