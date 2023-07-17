@@ -8,6 +8,7 @@ import (
 
 func GetJwtToken(c *fiber.Ctx) (string, error) {
 	auth := c.Get("Authorization")
+
 	if auth == "" {
 		return "", fiber.ErrUnauthorized
 	}

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+swag f
+swag i
