@@ -292,6 +292,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is a basic go fiber api",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {
