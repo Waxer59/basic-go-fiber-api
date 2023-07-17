@@ -4,9 +4,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/waxer59/basic-go-fiber-api/config"
+	"github.com/waxer59/basic-go-fiber-api/internal/helpers"
 )
 
 type JWTClaims struct {
@@ -51,4 +53,13 @@ func ParseJwt(tokenString string) (*JWTClaims, error) {
 	}
 
 	return nil, errors.New("invalid token")
+}
+
+func GetAndParseJwt(c *fiber.Ctx) (*JWTClaims, error) {
+	token, err := helpers.GetJwtToken(c)
+	if err != nil {
+		return nil, err
+	}
+
+	return ParseJwt(token)
 }

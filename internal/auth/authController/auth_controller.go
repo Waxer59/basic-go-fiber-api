@@ -17,12 +17,13 @@ func Setup(router fiber.Router) {
 }
 
 // Create a new user
-// @Description Create a new user
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /auth/register [post]
+//
+//	@Description	Create a new user
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/auth/register [post]
 func registerUser(c *fiber.Ctx) error {
 	user := new(userModels.User)
 
@@ -48,12 +49,13 @@ func registerUser(c *fiber.Ctx) error {
 }
 
 // Login a user
-// @Description Login a user
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /auth/login [post]
+//
+//	@Description	Login a user
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/auth/login [post]
 func userLogin(c *fiber.Ctx) error {
 	userLogin := new(authModels.UserLogin)
 

@@ -2,15 +2,11 @@ package uploadController
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/skip"
 	"github.com/google/uuid"
-	"github.com/waxer59/basic-go-fiber-api/database"
-	"github.com/waxer59/basic-go-fiber-api/internal/helpers"
-	"github.com/waxer59/basic-go-fiber-api/internal/upload/uploadModels"
 	"github.com/waxer59/basic-go-fiber-api/internal/upload/uploadService"
 	"github.com/waxer59/basic-go-fiber-api/internal/utils/jwtUtils"
 	"github.com/waxer59/basic-go-fiber-api/router/routeHandlers"
@@ -24,52 +20,103 @@ func Setup(router fiber.Router) {
 
 	upload.Post("/", uploadFile)
 	upload.Delete("/:id", deleteUpload)
+	upload.Get("/:id", getFileUpload)
+	upload.Get("/", getFileUploads)
 }
 
+// Delete a file
+//
+//	@Description	Delete a file
+//	@Tags			Upload
+//	@Accept			json
+//	@Produce		json
+//	@Param			id				path	string	true	"File ID"
+//
+//	@Param			Authorization	header	string	true	"Bearer {token}"
+//
+//	@Router			/upload/:id [delete]
 func deleteUpload(c *fiber.Ctx) error {
-	db := database.DB
-	var upload uploadModels.Upload
-
-	token, err := helpers.GetJwtToken(c)
-	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	userJWT, err := jwtUtils.ParseJwt(token)
-	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	err = db.Model(&uploadModels.Upload{}).Preload("User").Where("id = ?", c.Params("id")).First(&upload).Error
-	if err != nil {
-		return c.SendStatus(fiber.StatusNotFound)
-	}
-
-	if upload.User.ID != userJWT.ID {
-		return c.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	err = db.Delete(&upload, "id = ?", c.Params("id")).Error
+	userJWT, err := jwtUtils.GetAndParseJwt(c)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return err
 	}
 
-	dir, err := os.Getwd()
+	uploadDelete, err := uploadService.DeleteUpload(c.Params("id"), userJWT.ID)
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 
-	err = os.Remove(dir + "/uploads/" + upload.ID.String() + "." + upload.Ext)
-
-	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "File deleted successfully", "data": upload})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "File deleted successfully", "data": uploadDelete})
 }
 
+// Get a file
+//
+//	@Description	Get a file
+//	@Tags			Upload
+//	@Accept			json
+//	@Produce		mpfd
+//	@Param			id				path	string	true	"File ID"
+//
+//	@Param			Authorization	header	string	true	"Bearer {token}"
+//
+//	@Router			/upload/:id [get]
+func getFileUpload(c *fiber.Ctx) error {
+	userJWT, err := jwtUtils.GetAndParseJwt(c)
+
+	if err != nil {
+		return err
+	}
+
+	upload, err := uploadService.GetUpload(c.Params("id"), userJWT.ID.String())
+
+	if err != nil {
+		return err
+	}
+
+	return c.SendFile(fmt.Sprintf("./uploads/%s.%s", upload.ID, upload.Ext))
+}
+
+// Get all files
+//
+//	@Description	Get all files
+//	@Tags			Upload
+//	@Accept			json
+//	@Produce		json
+//
+//	@Param			Authorization	header	string	true	"Bearer {token}"
+//
+//	@Router			/upload [get]
+func getFileUploads(c *fiber.Ctx) error {
+	userJWT, err := jwtUtils.GetAndParseJwt(c)
+
+	if err != nil {
+		return err
+	}
+
+	uploads, err := uploadService.GetAllUploads(userJWT.ID.String())
+
+	if err != nil {
+		return err
+	}
+
+	ids := make([]string, len(uploads))
+	for i, d := range uploads {
+		ids[i] = d.ID.String()
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "File deleted successfully", "data": ids})
+}
+
+// Upload a file
+//
+//	@Description	Upload a file
+//	@Tags			Upload
+//	@Accept			mpfd
+//	@Produce		json
+//	@Param			Authorization	header	string	true	"Bearer {token}"
+//	@Router			/upload/ [post]
 func uploadFile(c *fiber.Ctx) error {
 	c.Accepts("multipart/form-data")
 
@@ -79,14 +126,12 @@ func uploadFile(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	token, err := helpers.GetJwtToken(c)
+	userJWT, err := jwtUtils.GetAndParseJwt(c)
+
 	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return err
 	}
-	userJWT, err := jwtUtils.ParseJwt(token)
-	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
-	}
+
 	fileName := uuid.New()
 	ext := strings.Split(file.Filename, ".")[1]
 

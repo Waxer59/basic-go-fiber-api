@@ -3,6 +3,7 @@ package userModels
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/waxer59/basic-go-fiber-api/internal/upload/uploadModels"
 	"github.com/waxer59/basic-go-fiber-api/internal/utils/bcryptUtils"
 	"gorm.io/gorm"
 )
@@ -10,10 +11,11 @@ import (
 var validate = validator.New()
 
 type User struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name     string    `json:"name" gorm:"not null" validate:"required"`
-	Email    string    `json:"email" gorm:"unique;not null" validate:"required,email"`
-	Password string    `json:"-" gorm:"not null" validate:"required"` // omited on response
+	ID       uuid.UUID             `gorm:"type:uuid;primaryKey"`
+	Name     string                `json:"name" gorm:"not null" validate:"required"`
+	Email    string                `json:"email" gorm:"unique;not null" validate:"required,email"`
+	Password string                `json:"password" gorm:"not null" validate:"required"` // omited on response
+	Uploads  []uploadModels.Upload `json:"-"`
 }
 
 type UpdateUser struct {

@@ -19,12 +19,12 @@ func Setup(router fiber.Router) {
 }
 
 // Update a user by ID
-// @Description Update a user by ID
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /users/:id [put]
+//	@Description	Update a user by ID
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/users/:id [put]
 func userPatch(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -46,12 +46,12 @@ func userPatch(c *fiber.Ctx) error {
 }
 
 // Delete a user by ID
-// @Description Delete a user by ID
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /users/:id [delete]
+//	@Description	Delete a user by ID
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/users/:id [delete]
 func userDelete(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -65,12 +65,12 @@ func userDelete(c *fiber.Ctx) error {
 }
 
 // Get a user
-// @Description Get a user
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /users:id [get]
+//	@Description	Get a user
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/users:id [get]
 func userGet(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -84,12 +84,12 @@ func userGet(c *fiber.Ctx) error {
 }
 
 // Get all users
-// @Description Get all users
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Success 200 {object} userModels.User
-// @Router /users [get]
+//	@Description	Get all users
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	userModels.User
+//	@Router			/users [get]
 func userGetAll(c *fiber.Ctx) error {
 	users := userService.GetAllUsers()
 

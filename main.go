@@ -13,10 +13,10 @@ import (
 	_ "github.com/waxer59/basic-go-fiber-api/docs"
 )
 
-// @title Basic Go Fiber API
-// @version 1.0
-// @description This is a basic go fiber api
-// @BasePath /
+//	@title			Basic Go Fiber API
+//	@version		1.0
+//	@description	This is a basic go fiber api
+//	@BasePath		/
 func main() {
 	app := fiber.New(fiber.Config{
 		AppName:       "Fiber App",

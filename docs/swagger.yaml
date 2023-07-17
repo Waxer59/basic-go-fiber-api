@@ -1,19 +1,7 @@
 basePath: /
 definitions:
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   userModels.User:
     properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       email:
         type: string
       id:
@@ -21,8 +9,7 @@ definitions:
       name:
         type: string
       password:
-        type: string
-      updatedAt:
+        description: omited on response
         type: string
     required:
     - email
@@ -63,6 +50,79 @@ paths:
             $ref: '#/definitions/userModels.User'
       tags:
       - Auth
+  /upload:
+    get:
+      consumes:
+      - application/json
+      description: Get all files
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - Upload
+  /upload/:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a file
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - Upload
+  /upload/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a file
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - Upload
+    get:
+      consumes:
+      - application/json
+      description: Get a file
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - multipart/form-data
+      responses: {}
+      tags:
+      - Upload
   /users:
     get:
       consumes:
