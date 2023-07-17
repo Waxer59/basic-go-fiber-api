@@ -1,5 +1,4 @@
 repos:
-  # ... other repos ...
   - repo: https://github.com/muya/swaggo-hooks
     rev: "main"
     hooks:
