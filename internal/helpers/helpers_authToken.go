@@ -11,5 +11,6 @@ func GetJwtToken(c *fiber.Ctx) (string, error) {
 	if auth == "" {
 		return "", fiber.ErrUnauthorized
 	}
+
 	return strings.Split(auth, "Bearer ")[1], nil
 }
