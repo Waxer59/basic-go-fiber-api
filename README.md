@@ -15,7 +15,7 @@ go mod download
 ```
 4. Run the project using:
 ```bash
-go run cmd/main.go
+go run main.go
 
 # or
 
