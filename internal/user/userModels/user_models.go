@@ -24,7 +24,7 @@ type UpdateUser struct {
 	Password string  `json:"-"` // omited on response
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {
+func (u *User) BeforeSave(tx *gorm.DB) error {
 	u.ID = uuid.New()
 
 	return nil

@@ -1,6 +1,7 @@
 package jwtUtils
 
 import (
+	"os"
 	"errors"
 	"time"
 
@@ -17,7 +18,7 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-var jwtKey = []byte(config.GetEnv("JWT_SECRET_KEY"))
+var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 const JWT_EXPIRATION_TIME = time.Hour * 24
 

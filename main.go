@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"log"
 
@@ -18,6 +19,12 @@ import (
 // @description	This is a basic go fiber api
 // @BasePath		/api
 func main() {
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatalf("Error loading .env file. Err: %s", err)
+	}
+
 	app := fiber.New(fiber.Config{
 		AppName:       "Fiber App",
 		CaseSensitive: true,
@@ -29,7 +36,7 @@ func main() {
 
 	router.Setup(app)
 
-	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.GetEnv("PORT"))))
+	log.Fatal(app.Listen(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }
 
 func middlewares(app *fiber.App) {
