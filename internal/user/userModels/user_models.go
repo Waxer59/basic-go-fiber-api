@@ -25,8 +25,9 @@ type UpdateUser struct {
 }
 
 func (u *User) BeforeSave(tx *gorm.DB) error {
-	u.ID = uuid.New()
-
+	if u.ID == uuid.Nil {
+		u.ID = uuid.New()
+	}
 	return nil
 }
 
